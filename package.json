@@ -1,0 +1,35 @@
+{
+  "name": "bot-test",
+  "version": "1.0.0",
+  "description": "just a bot",
+  "main": "index.js",
+  "dependencies": {
+    "@discordjs/opus": "^0.5.0",
+    "@reconlx/discord.js": "^1.1.101",
+    "better-sqlite3": "^7.4.0",
+    "discord-player": "^4.0.7",
+    "discord-prefix": "^2.0.0",
+    "discord.js": "^12.5.3",
+    "distube": "^2.8.13",
+    "dotenv": "^9.0.2",
+    "eris": "^0.15.1",
+    "eris-additions": "^1.4.1",
+    "express": "^4.17.1",
+    "ffmpeg-static": "^4.3.0",
+    "fs": "0.0.1-security",
+    "merge-options": "^3.0.4",
+    "mongodb": "^3.6.6",
+    "mongoose": "^5.12.10",
+    "reconlx": "^1.2.41",
+    "ytdl-core": "^4.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "index.js"
+  },
+  "keywords": [
+    "none"
+  ],
+  "author": "BigPaintballGamer",
+  "license": "ISC"
+}
