@@ -6,6 +6,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.5.0",
     "@reconlx/discord.js": "^1.1.101",
+    "@vitalets/google-translate-api": "^7.0.0",
     "better-sqlite3": "^7.4.0",
     "discord-player": "^4.0.7",
     "discord-prefix": "^2.0.0",
@@ -17,10 +18,15 @@
     "express": "^4.17.1",
     "ffmpeg-static": "^4.3.0",
     "fs": "0.0.1-security",
+    "google": "^2.1.0",
+    "google-translate-api": "^2.3.0",
     "merge-options": "^3.0.4",
     "mongodb": "^3.6.6",
     "mongoose": "^5.12.10",
+    "random-puppy": "^1.1.0",
     "reconlx": "^1.2.41",
+    "weather-js": "^2.0.0",
+    "youtube-search": "^1.1.6",
     "ytdl-core": "^4.8.0"
   },
   "devDependencies": {},

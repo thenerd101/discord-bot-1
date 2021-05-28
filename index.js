@@ -4,6 +4,7 @@ const Discord = require('discord.js');
 const discordprefix = require('discord-prefix');
 const Eris = require("eris-additions")(require("eris"));
 const keepAlive = require('./server.js');
+const mongoose = require('mongoose')
 const { defaultprefix } = require('./config.json')
 require('dotenv').config();
 
@@ -36,12 +37,12 @@ client.aliases = new Discord.Collection();
 const { MongoClient } = require("mongodb");
 const mongo = new MongoClient(process.env.MONGOURL, { useUnifiedTopology: true, useNewUrlParser: true })
 
-
 //Mongo Connect
 mongo.connect((err) => {
     if(err) throw err;
     console.log("Connection to MongoDB database established successfully!");
 });
+mongoose.connect(process.env.MONGOURL, { useUnifiedTopology: true, useNewUrlParser: true});
 
 
 
@@ -55,13 +56,37 @@ for (const file of commandFiles) {
 
 let thedefaultPrefix = defaultprefix;
 
+
+
+
 // Create a new DisTube
 client.distube = new DisTube(client, { searchSongs: false, emitNewSongOnly: true })
 // DisTube event listeners, more in the documentation page
 client.distube
-    .on("playSong", (message, queue, song) => message.channel.send(
+    .on("playSong", (message, queue, song) => {
+		let startembed = new Discord.MessageEmbed()
+		.setTitle('Playing...')
+		.setThumbnail(song.thumbnail)
+		.setDescription('Here are the details of the music you are playing right now!')
+		.setColor("RED")
+		.addFields(
+	  	{ name: 'Video/song name:', value: song.name, inline:true},
+	  	{ name: 'Duration:', value: song.formattedDuration, inline:true},
+	  	{ name: 'Requested by:', value: song.user, inline:true},
+		{ name: 'Likes:', value: song.likes, inline:true},
+		{ name: 'Dislikes:', value: song.dislikes, inline:true},
+		{ name: 'Views:', value: song.views, inline:true},
+		{ name: 'Youtube video:', value: song.youtube, inline:true},
+		{ name: 'Url:', value: song.url, inline:true},
+        )
+		.setTimestamp()
+		.setFooter('Turn up your volume if you cant hear the music!')
+
+		message.channel.send(startembed);
+	})
+	/*message.channel.send(
         `Playing \`${song.name}\` - \`${song.formattedDuration}\`\nRequested by: ${song.user}`
-    ))
+    ))*/
 	.on("addSong", (message, queue, song) => message.channel.send(
         `Added ${song.name} - \`${song.formattedDuration}\` to the queue by ${song.user}`
     ))
@@ -82,6 +107,9 @@ client.distube
 client.on('message', async message => {
 	const db = mongo.db("Bot1");
 
+	client.user.setActivity(`${client.guilds.cache.size} cool dang servers! || !help`, { type: 'LISTENING' });
+
+	console.log(client.guilds.cache.size);
 
 	if (!message.guild) return;
 
@@ -113,9 +141,9 @@ client.on('message', async message => {
 		return message.reply('I can\'t execute that command inside DMs!');
 	}
 
-	if (command.permissions) {
+	if (command.help.permissions) {
 		const authorPerms = message.channel.permissionsFor(message.author);
-		if (!authorPerms || !authorPerms.has(command.permissions)) {
+		if (!authorPerms || !authorPerms.has(command.help.permissions)) {
 			return message.reply('You can not do this!');
 		}
 	}
@@ -123,8 +151,8 @@ client.on('message', async message => {
 	if (command.args && !args.length) {
 		let reply = `You didn't provide any arguments, ${message.author}!`;
 
-		if (command.usage) {
-			reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+		if (command.help.usage) {
+			reply += `\nThe proper usage would be: \`${prefix}${command.help.name} ${command.help.usage}\``;
 		}
 
 		return message.channel.send(reply);
@@ -132,20 +160,20 @@ client.on('message', async message => {
 
 	const { cooldowns } = client;
 
-	if (!cooldowns.has(command.name)) {
-		cooldowns.set(command.name, new Discord.Collection());
+	if (!cooldowns.has(command.help.name)) {
+		cooldowns.set(command.help.name, new Discord.Collection());
 	}
 
 	const now = Date.now();
-	const timestamps = cooldowns.get(command.name);
-	const cooldownAmount = (command.cooldown || 3) * 1000;
+	const timestamps = cooldowns.get(command.help.name);
+	const cooldownAmount = (command.help.cooldown || 3) * 1000;
 
 	if (timestamps.has(message.author.id)) {
 		const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
 
 		if (now < expirationTime) {
 			const timeLeft = (expirationTime - now) / 1000;
-			return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
+			return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.help.name}\` command.`);
 		}
 	}
 
@@ -167,7 +195,7 @@ client.on('message', async message => {
 
 //Connect client
 client.on('ready', () => {
-	client.user.setActivity(`some cool dang (20+) servers!`, { type: 'LISTENING' });
+	client.user.setActivity(`${client.guilds.cache.size} cool dang servers! || !help`, { type: 'LISTENING' });
     console.log(`${client.user.tag} is online!`);
 });
 
