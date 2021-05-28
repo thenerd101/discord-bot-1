@@ -3,8 +3,12 @@
 
 
 
-module.exports.run = async (client, message, args, db) => {
+module.exports.run = async (client, message, args, prefix, db) => {
 	const amount = parseInt(args[0]);
+
+	if (!message.member.hasPermission("ADMINISTRATOR")) {
+        return message.reply("you are not allowed to use this command!")
+    }
 
 	if (isNaN(amount)) {
 		return message.reply('that doesn\'t seem to be a valid number.');
@@ -26,5 +30,4 @@ module.exports.run = async (client, message, args, db) => {
 module.exports.help = {
 	name: 'purge',
 	description: 'purge up to 99 messages.',
-	permissions: 'ADMINISTRATOR',
 }

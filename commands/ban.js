@@ -5,6 +5,9 @@ const Discord = require('discord.js')
 module.exports.run = async (client, message, args, db) => {
   const banReason = args.slice(1).join(' '); // Reason of the ban (Everything behind the mention)
 
+  if (!message.member.hasPermission("KICK_MEMBERS")) {
+    return message.reply("you are not allowed to ban members!")
+  }
 
   const user = message.mentions.users.first();
         // If we have a user mentioned
@@ -20,9 +23,10 @@ module.exports.run = async (client, message, args, db) => {
              * Read more about what ban options there are over at
              * https://discord.js.org/#/docs/main/master/class/GuildMember?scrollTo=ban
              */
-          if (user = message.author) {
+            if (message.author.id === member.id) {
               return message.reply('you cannot ban yourself!')
-          } else member.ban({ reason: banReason, })
+           } 
+            member.ban({ reason: banReason, })
 
             .then(() => {
               // We let the message author know we were able to ban the person
@@ -54,7 +58,6 @@ module.exports.help = {
 	name: 'ban',
 	description: 'ban a member!',
   usage: '[mentioned member]',
-  permissions: 'BAN_MEMBERS',
 };
 
 

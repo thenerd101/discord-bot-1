@@ -3,7 +3,7 @@ const { prefix } = require('../config.json')
 
 
 
-module.exports.run = async (client, message, args, db) => {
+module.exports.run = async (client, message, args, prefix, db) => {
 	const data = [];
 	const { commands } = message.client;
 

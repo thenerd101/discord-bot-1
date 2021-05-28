@@ -1,8 +1,8 @@
 
 
 
-module.exports.run = async (client, message, args, db) => {
-  
+module.exports.run = async (client, message, args, prefix, db) => {
+  message.reply(`the bot is in ${client.guilds.cache.size} servers.`)
 }
 
 
