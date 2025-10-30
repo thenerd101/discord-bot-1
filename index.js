@@ -47,12 +47,14 @@ const client = new Client({
     ],
     partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
+
 client.commands = new Collection();
-client.cooldowns = new Collection();
-client.aliases = new Collection();
+//client.cooldowns = new Collection();
+//client.aliases = new Collection();
 
 //MongoDB Variables
 const { MongoClient } = require("mongodb");
+const e = require('express');
 const mongo = new MongoClient(process.env.MONGOURL, { useUnifiedTopology: true, useNewUrlParser: true })
 
 //Mongo Connect
@@ -81,7 +83,7 @@ for (const folder of commandFolders) {
     }
 }
 
-let thedefaultPrefix = defaultprefix;
+//let thedefaultPrefix = defaultprefix;
 
 // Create a new DisTube
 
@@ -126,7 +128,6 @@ client.distube
         { name: 'Likes:', value: String(song?.likes ?? 'N/A'), inline: true },
         { name: 'Dislikes:', value: String(song?.dislikes ?? 'N/A'), inline: true },
         { name: 'Views:', value: String(song?.views ?? 'N/A'), inline: true },
-        { name: 'Youtube video:', value: String(song?.youtube ?? 'N/A'), inline: true },
         { name: 'Url:', value: String(song?.url ?? 'N/A'), inline: true }
       )
       .setTimestamp()
@@ -134,7 +135,7 @@ client.distube
 
     textChannel.send({ embeds: [startembed] }).catch(console.error);
   })
-  .on('stop', (...args) => {
+  .on('finishSong', (...args) => {
     // args can be (message, queue) or (queue)
     let message, queue;
     if (args.length === 2) [message, queue] = args;
@@ -169,15 +170,28 @@ client.distube
     const list = (result || []).map(song => `**${++i}**. ${song.name} - \`${song.formattedDuration}\``).join('\n');
     textChannel.send(`**Choose an option from below**\n${list}\n*Enter anything else or wait 60 seconds to cancel*`).catch(console.error);
   })
-  .on('error', (payload, error) => {
+  .on('error', (error, payload) => {
     // payload can be a Queue, Message, TextChannel, or something else
-    const textChannel = payload?.textChannel ?? payload?.channel ?? payload;
+    
+    console.log('Payload:', payload);
+
+    const textChannel = payload?.textChannel ?? payload?.channel ?? payload?.message?.channel ?? null;
     if (textChannel && typeof textChannel.send === 'function') {
-      textChannel.send(`An error encountered: ${String(error)}`).catch(console.error);
+        console.log('Sending error message to text channel.');
+        const embed = new EmbedBuilder()
+            .setTitle('An error occurred! :(')
+            .setDescription('Sorry, an error was encountered while processing your request.')
+            .setColor('Red')
+            .addFields(
+                { name: 'Error Details', value: `\`\`\`${String(error)}\`\`\`` }
+            )
+            .setFooter({ text: 'Distube Error! Please try again later or contact support if the issue persists.' })
+            .setTimestamp();
+        textChannel.send({ embeds: [embed] }).catch(console.error);
     } else {
-      // No channel available — log full payload for debugging
-      console.error('DisTube error (no channel):', payload);
-      console.error('DisTube error detail:', error);
+        // No channel available — log full payload for debugging
+        console.error('DisTube Error (NO CHANNEL):', error);
+        console.error('DisTube Error detail:', payload);
     }
   })
   .on('debug', (message) => {
@@ -223,89 +237,43 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-
+/* -------------- IGNORE ---------------- /
 client.on('messageCreate', async message => {
-    const db = mongo.db("Bot1");
+    //const db = mongo.db("Bot1");
 
-    client.user.setActivity(`${client.guilds.cache.size} cool dang servers! || NOW SUPPORTS SLASH COMMANDS!`, { type: ActivityType.Listening });
+    //client.user.setActivity(`${client.guilds.cache.size} cool dang servers! || NOW SUPPORTS SLASH COMMANDS!`, { type: ActivityType.Listening });
+    // presence is managed in the ready handler (rotating statuses). Do not set activity per message.
 
-    console.log(client.guilds.cache.size);
-
-    if (!message.guild) return;
-
-    //get the prefix for the discord server
-    //let prefix = discordprefix.getPrefix(message.guild.id); DEPRECIATED
-	let prefix;
-	//const guildData = await db.collection("prefixes").findOne({ GuildID: message.guild.id }); AI CODE
-
-    //set prefix to the default prefix if there isn't one
-    if (!prefix) prefix = thedefaultPrefix;
-
-    if (!message.content.startsWith(prefix) || message.author.bot) return;
-
-    const args = message.content.slice(prefix.length).trim().split(/ +/);
-    const commandName = args.shift().toLowerCase();
-
-    const command = client.commands.get(commandName)
-        || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-
-    if (!command) return;
-
-    if (command.guildOnly && message.channel.type === ChannelType.DM) {
-        return message.reply('I can\'t execute that command inside DMs!');
-    }
-
-    if (command.help.permissions) {
-        const memberPerms = message.member?.permissions;
-        if (!memberPerms || !memberPerms.has(command.help.permissions)) {
-            return message.reply('You can not do this!');
-        }
-    }
-
-    if (command.args && !args.length) {
-        let reply = `You didn't provide any arguments, ${message.author}!`;
-
-        if (command.help.usage) {
-            reply += `\nThe proper usage would be: \`${prefix}${command.help.name} ${command.help.usage}\``;
-        }
-
-        return message.channel.send(reply);
-    }
-
-    const { cooldowns } = client;
-
-    if (!cooldowns.has(command.help.name)) {
-        cooldowns.set(command.help.name, new Collection());
-    }
-
-    const now = Date.now();
-    const timestamps = cooldowns.get(command.help.name);
-    const cooldownAmount = (command.help.cooldown || 3) * 1000;
-
-    if (timestamps.has(message.author.id)) {
-        const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-
-        if (now < expirationTime) {
-            const timeLeft = (expirationTime - now) / 1000;
-            return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.help.name}\` command.`);
-        }
-    }
-
-    timestamps.set(message.author.id, now);
-    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-
-    try {
-        command.run(client, message, args, prefix, db);
-    } catch (error) {
-        console.error(error);
-        message.reply('there was an error trying to execute that command!');
-    }
+    //if (!message.guild) return;
 });
+*/
 
 //Connect client
 client.on('ready', () => {
-    client.user.setActivity(`${client.guilds.cache.size} cool dang servers! || NOW SUPPORTS SLASH COMMANDS!`, { type: ActivityType.Listening });
     console.log(`${client.user.tag} is online!`);
+
+    // rotating presence messages every x seconds
+    const activityTemplates = [
+        () => `${client.guilds.cache.size} cool dang servers! || NOW SUPPORTS SLASH COMMANDS!`,
+        () => `${client.guilds.cache.size} cool dang servers! || Ping: ${Math.round(client.ws.ping)}ms`,
+        () => `${client.guilds.cache.size} cool dang servers! || Back after 4 YEARS!`
+    ];
+
+    let idx = 0;
+    // set initial activity immediately
+    try {
+        client.user.setActivity(activityTemplates[idx](), { type: ActivityType.Listening });
+    } catch (e) { /* ignore */ }
+
+    // rotate every x seconds
+    setInterval(() => {
+        idx = (idx + 1) % activityTemplates.length;
+        try {
+            client.user.setActivity(activityTemplates[idx](), { type: ActivityType.Listening });
+        } catch (e) {
+            console.error('Failed to set activity:', e);
+        }
+    }, 10_000); // seconds to rotate presence messages
 });
 
 keepAlive();
