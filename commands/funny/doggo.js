@@ -28,6 +28,13 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('doggo')
     .setDescription('Post a random dog image from Reddit'),
+  advancedHelp: {
+    details: 'This command fetches and posts a random dog image from various dog-related subreddits on Reddit. When a user invokes this command, the bot retrieves a selection of hot posts from subreddits like r/dog, r/puppy, and others, filters for image posts, and then randomly selects one to share in the Discord channel. This is a fun way for users to see cute dog images and brighten their day. Next time you want to see an adorable dog picture, just use this command!',
+    usage: '/doggo',
+    examples: [
+      '/doggo',
+    ],
+  },
   async execute(interaction) {
     await interaction.deferReply().catch(() => {});
 

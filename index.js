@@ -6,6 +6,7 @@ const { YtDlpPlugin } = require('@distube/yt-dlp');
 const { SoundCloudPlugin } = require('@distube/soundcloud');
 const { DirectLinkPlugin } = require('@distube/direct-link');
 const { BandlabPlugin } = require('@distube/bandlab');
+const { YouTubePlugin } = require('@distube/youtube');
 
 const { Client, GatewayIntentBits, Partials, Collection, EmbedBuilder, ActivityType, ChannelType } = require('discord.js');
 const keepAlive = require('./server.js');
@@ -92,7 +93,8 @@ client.distube = new DisTube(client, {
     plugins: [
         new DirectLinkPlugin(),
         new BandlabPlugin(),
-        //new SoundCloudPlugin(),
+        new SoundCloudPlugin(),
+        //new YouTubePlugin(),
         new YtDlpPlugin({ update: false })
     ],
 });
@@ -131,6 +133,17 @@ client.distube
       .setFooter({ text: 'Turn up your volume if you cant hear the music!' });
 
     textChannel.send({ embeds: [startembed] }).catch(console.error);
+  })
+  .on('stop', (...args) => {
+    // args can be (message, queue) or (queue)
+    let message, queue;
+    if (args.length === 2) [message, queue] = args;
+    else if (args.length === 1) [queue] = args;
+
+    const textChannel = queue?.textChannel ?? (message?.channel ?? message);
+    if (!textChannel || typeof textChannel.send !== 'function') return;
+
+    textChannel.send('Music has stopped..').catch(console.error);
   })
   .on('addSong', (...args) => {
     // args can be (message, queue, song) or (queue, song)
@@ -185,6 +198,17 @@ client.on('interactionCreate', async interaction => {
         await command.execute(interaction);
     } catch (error) {
         console.error(error);
+        const embed = new EmbedBuilder()
+            .setTitle('Error! :(')
+            .setDescription('There was an error while executing this command!')
+            .setThumbnail('https://i.imgur.com/1X4QZ5R.png')
+            .setFields(
+                { name: 'Error Details', value: `\`\`\`${error.message}\`\`\`` }
+            )
+            .setFooter({ text: 'Please try again later or contact support if the issue persists.' })
+            .setColor('Red')
+            .setTimestamp();
+        interaction.reply({ embeds: [embed], ephemeral: true });
         if (interaction.replied || interaction.deferred) {
 			await interaction.followUp({
 				content: 'There was an error while executing this command!',
@@ -196,7 +220,6 @@ client.on('interactionCreate', async interaction => {
 				flags: MessageFlags.Ephemeral,
 			});
 		}
-
     }
 });
 
@@ -204,7 +227,7 @@ client.on('interactionCreate', async interaction => {
 client.on('messageCreate', async message => {
     const db = mongo.db("Bot1");
 
-    client.user.setActivity(`${client.guilds.cache.size} cool dang servers! || !help`, { type: ActivityType.Listening });
+    client.user.setActivity(`${client.guilds.cache.size} cool dang servers! || NOW SUPPORTS SLASH COMMANDS!`, { type: ActivityType.Listening });
 
     console.log(client.guilds.cache.size);
 
@@ -281,7 +304,7 @@ client.on('messageCreate', async message => {
 
 //Connect client
 client.on('ready', () => {
-    client.user.setActivity(`${client.guilds.cache.size} cool dang servers! || !help`, { type: ActivityType.Listening });
+    client.user.setActivity(`${client.guilds.cache.size} cool dang servers! || NOW SUPPORTS SLASH COMMANDS!`, { type: ActivityType.Listening });
     console.log(`${client.user.tag} is online!`);
 });
 

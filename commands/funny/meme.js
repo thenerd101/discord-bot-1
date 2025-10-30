@@ -33,6 +33,13 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('meme')
     .setDescription('Post a random meme from a meme subreddit'),
+  advancedHelp: {
+    details: 'This command fetches and posts a random meme from popular meme subreddits on Reddit. When a user invokes this command, the bot retrieves a selection of hot posts from various meme-focused subreddits, filters for image posts, and randomly selects one to share in the Discord channel. This is a fun way to get a quick laugh or share memes with friends. Next time you want to see a random meme, just use this command!',
+    usage: '/meme',
+    examples: [
+      '/meme',
+    ],
+  },
   async execute(interaction) {
     await interaction.deferReply().catch(() => {}); // give more time for fetches
 

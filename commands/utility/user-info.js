@@ -4,6 +4,13 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('user-info')
 		.setDescription('Display info about yourself.'),
+	advancedHelp: {
+		details: 'This command displays your Discord username and user ID. It is useful for users who need to know their own information, perhaps for troubleshooting or identification purposes within the server. Simply invoke the command, and the bot will respond with your details.',
+		usage: '/user-info',
+		examples: [
+			'/user-info',
+		],
+	},
 	async execute(interaction) {
 		await interaction.reply(`Your username: ${interaction.user.username}\nYour ID: ${interaction.user.id}`);
 	},

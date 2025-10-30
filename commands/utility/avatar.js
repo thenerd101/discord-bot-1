@@ -9,7 +9,14 @@ module.exports = {
 				.setDescription('The user to get the avatar of')
 				.setRequired(false)
 		),
-
+	advancedHelp: {
+		details: 'This command retrieves the avatar of a specified user or the command invoker if no user is specified. It displays the avatar in an embedded message along with a direct link to the avatar image. This is useful for quickly viewing or sharing user avatars within the server.',
+		usage: '/avatar [user]',
+		examples: [
+			'/avatar',
+			'/avatar @username',
+		],
+	},
 	async execute(interaction) {
 		const user = interaction.options.getUser('user') || interaction.user;
         const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });

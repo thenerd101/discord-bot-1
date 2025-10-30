@@ -4,6 +4,13 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('skip')
         .setDescription('skip the current song and play the next one in the queue!'),
+    advancedHelp: {
+        details: 'This command is used to skip the currently playing song and move to the next song in the music queue. When a user invokes this command while in a voice channel, the bot will stop the current track and immediately start playing the next track in the queue. This is particularly useful when the user wants to quickly change the music without waiting for the current song to finish. Next time you want to skip a song, just use this command!',
+        usage: '/skip',
+        examples: [
+            '/skip',
+        ],
+    },
     async execute(interaction) {
         const client = interaction.client;
         const member = interaction.member;

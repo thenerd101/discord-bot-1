@@ -11,7 +11,14 @@ module.exports = {
         .setDescription('The music to play (name or url)')
         .setRequired(true)
     ),
-
+  advancedHelp: {
+    details: 'This command is used to play music in a voice channel. When a user invokes this command while in a voice channel and provides a song name or URL, the bot will join the voice channel and start playing the requested music. It supports searching for songs by name as well as playing music directly from URLs. This is useful for users who want to listen to music together in a voice channel. Next time you want to play some tunes, just use this command!',
+    usage: '/play <music>',
+    examples: [
+      '/play Never Gonna Give You Up',
+      '/play https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    ],
+  },
   async execute(interaction) {
     const client = interaction.client;
     const member = interaction.member;

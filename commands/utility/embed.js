@@ -9,6 +9,14 @@ module.exports = {
                 .setDescription('The message to embed')
                 .setRequired(true)
         ),
+    advancedHelp: {
+        details: 'This command allows you to send a message embedded in a rich format. You can specify the text you want to include in the embed, and the bot will format it nicely for you. This is useful for highlighting important information or making your messages stand out in the chat.',
+        usage: '/embed (message)',
+        examples: [
+            '/embed Hello, this is an embedded message!',
+            '/embed Here is some important information in an embed.',
+        ],
+    },
     async execute(interaction) {
         const text = interaction.options.getString('text');
         if (!text) {

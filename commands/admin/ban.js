@@ -7,7 +7,20 @@ module.exports = {
     .addUserOption(option =>
       option.setName('user')
         .setDescription('The member to ban')
-        .setRequired(true)),
+        .setRequired(true)
+      )
+      .addStringOption(option =>
+      option.setName('reason')
+        .setDescription('The reason for the ban')
+      ),
+  advancedHelp: {
+    details: 'This command allows administrators to ban a member from the Discord server. When a user with the appropriate permissions invokes this command and specifies a member to ban, the bot will remove that member from the server and optionally log the reason for the ban. This is useful for maintaining community standards and ensuring a safe environment for all members. Next time you need to ban a disruptive member, just use this command!',
+    usage: '/ban [user] [reason]',
+    examples: [
+      '/ban @Troublemaker Spamming in channels',
+      '/ban @User123',
+    ],
+  },
   async execute(interaction) {
     const member = interaction.options.getMember('user');
     const banReason = interaction.options.getString('reason') || 'No reason provided';

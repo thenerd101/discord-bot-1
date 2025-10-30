@@ -16,6 +16,14 @@ module.exports = {
             option.setName('reason')
                 .setDescription('The reason for the warning')
                 .setRequired(true)),
+    advancedHelp: {
+        details: 'This command allows administrators to issue warnings to members in the server. You can specify the member to warn and provide a reason for the warning. This is useful for moderating behavior and keeping track of member infractions. Please note that this command requires kick member permissions to execute.',
+        usage: '/warn [target] [reason]',
+        examples: [
+            '/warn @User Spamming in chat',
+            '/warn UserID Inappropriate language',
+        ],
+    },
     async execute(interaction) {
         const toWarn = interaction.options.getUser('target');
         const reason = interaction.options.getString('reason');

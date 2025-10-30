@@ -4,6 +4,13 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('rps')
         .setDescription('A rock paper scissors playing command!'),
+    advancedHelp: {
+        details: 'This command allows you to play a game of Rock, Paper, Scissors against the bot. When you invoke this command, the bot will prompt you to react with your choice of rock, paper, or scissors using emojis. After you make your selection, the bot will randomly choose its own option and then determine the winner based on the classic rules of the game. It\'s a fun and interactive way to challenge the bot and see if you can outsmart it! Next time you want to play a quick game of Rock, Paper, Scissors, just use this command!',
+        usage: '/rps',
+        examples: [
+            '/rps',
+        ],
+    },
     async execute(interaction) {
         let embed = new EmbedBuilder()
             .setTitle("RPS GAME")

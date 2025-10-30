@@ -15,6 +15,14 @@ module.exports = {
                 .setDescription('The text to translate')
                 .setRequired(true)
         ),
+    advancedHelp: {
+        details: 'This command translates text from one language to another using the Google Translate API. Users can specify the target language and the text they want to translate. It is useful for communicating across different languages or understanding foreign text. Simply provide the language code and the text, and the bot will return the translated version along with the detected source language. Give it a try next time you need a quick translation! [NOTE: Make sure to use valid language codes. List: es - Spanish, fr - French, de - German, it - Italian, ja - Japanese, zh-CN - Chinese (Simplified), ru - Russian, pt - Portuguese, ar - Arabic, hi - Hindi, and many more. More codes can be found online. More info at https://cloud.google.com/translate/docs/languages]',
+        usage: '/translate <language> <input>',
+        examples: [
+            '/translate es Hello, how are you?',
+            '/translate fr Good morning!',
+        ],
+    },
     async execute(interaction) {
         const lang = interaction.options.getString('language');
         const suffix = interaction.options.getString('input');

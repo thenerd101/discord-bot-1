@@ -19,6 +19,14 @@ module.exports = {
                     { name: 'Fahrenheit', value: 'F' }
                 )
         ),
+    advancedHelp: {
+        details: 'This command retrieves and displays the current weather forecast for a specified location. When a user invokes this command and provides a location, the bot fetches the latest weather data, including temperature, humidity, wind conditions, and more, and presents it in an easy-to-read format. This is particularly useful for users who want quick access to weather information without leaving Discord. Next time you need to check the weather, just use this command!',
+        usage: '/weather <location> [unit]',
+        examples: [
+            '/weather New York',
+            '/weather Tokyo F',
+        ],
+    },    
     async execute(interaction) {
         const location = interaction.options.getString('location');
 

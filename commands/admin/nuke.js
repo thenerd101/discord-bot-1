@@ -10,6 +10,14 @@ module.exports = {
             .setDescription('Reason for nuking the channel')
             .setRequired(false)
         ),
+    advancedHelp: {
+        details: 'This command allows administrators to "nuke" a channel, which involves deleting the current channel and creating a new one in its place. This can be useful for quickly clearing out all messages in a channel while retaining its settings and permissions. Users must have administrator permissions to use this command. A reason for the nuke can be provided, which will be displayed in the new channel.',
+        usage: '/nuke [reason]',
+        examples: [
+            '/nuke Spamming',
+            '/nuke',
+        ],
+    },
     async execute(interaction) {
         if(!interaction.member.permissions.has("Administrator")) {
             return interaction.reply("You do not have enough perms to use this command!")

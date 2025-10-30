@@ -8,6 +8,7 @@
     "@distube/bandlab": "^1.0.0",
     "@distube/direct-link": "^1.0.1",
     "@distube/soundcloud": "^2.0.4",
+    "@distube/youtube": "^1.0.4",
     "@distube/yt-dlp": "^2.0.1",
     "@reconlx/discord.js": "^1.1.101",
     "@snazzah/davey": "^0.1.7",

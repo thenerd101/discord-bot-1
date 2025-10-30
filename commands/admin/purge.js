@@ -9,6 +9,14 @@ module.exports = {
 				.setDescription('The number of messages to purge (1-99)')
 				.setRequired(true)
 		),
+	advancedHelp: {
+		details: 'Summon the purge in a text channel! This command allows administrators to bulk delete (or thanos snap) messages in a channel! You can specify the number of messages to delete, ranging from 1 to 99. This is useful for quickly cleaning up channels and removing unwanted messages. Please note that this command requires administrator permissions to execute!',
+		usage: '/purge [amount]',
+		examples: [
+			'/purge 10',
+			'/purge 50',
+		],
+	},
 	async execute(interaction) {
 		const amount = interaction.options.getInteger('amount');
 		if (!interaction.member.permissions.has("ADMINISTRATOR")) {

@@ -4,6 +4,15 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('kick')
 		.setDescription('Tag a member and kick them.'),
+	advancedHelp: {
+		details: 'This command allows a user with the appropriate permissions to kick a specified member from the server. The user must mention the member they wish to kick. The command checks for necessary permissions and ensures that the user is not attempting to kick themselves or the server owner. If the bot has the required permissions, it will proceed to kick the member and confirm the action. This command is useful for server moderation and maintaining community standards.',
+		usage: '/kick @user',
+		examples: [
+			'/kick @Troublemaker',
+			'/kick @Spammer',
+			'/kick @User123',
+		],
+	},
 	async execute(interaction) {
 		let member = interaction.options.getMember('user');
 		if (!interaction.member.permissions.has("KICK_MEMBERS")) {

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,6 +14,14 @@ module.exports = {
                 .setDescription('Reason for setting slowmode')
                 .setRequired(true)
         ),
+    advancedHelp: {
+        details: 'This command allows administrators to set a slowmode for the current channel. You can specify the duration in seconds and provide a reason for setting the slowmode. This is useful for managing chat flow during busy times or events. Please note that this command requires administrator permissions to execute.',
+        usage: '/slow [duration] [reason]',
+        examples: [
+            '/slow 10 Spamming',
+            '/slow 30 Event in progress',
+        ],
+    },
     async execute(interaction) {
         if(!interaction.member.permissions.has("ADMINISTRATOR")) {
             return interaction.reply("You don't have enough perms to use this command!")
